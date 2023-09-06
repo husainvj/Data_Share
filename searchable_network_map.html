@@ -1,0 +1,1018 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1000px;
+                 background-color: black;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 1000px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="Ruhr University Bochum">Ruhr University Bochum</option>
+                                
+                                    <option value="Prof. Dr. Harald Zepp">Prof. Dr. Harald Zepp</option>
+                                
+                                    <option value="Dr.  Malte Buehrs">Dr.  Malte Buehrs</option>
+                                
+                                    <option value="IMECOGIP">IMECOGIP</option>
+                                
+                                    <option value="Research Institute for Regional and Urban Development">Research Institute for Regional and Urban Development</option>
+                                
+                                    <option value="Dr.  Kathrin Specht">Dr.  Kathrin Specht</option>
+                                
+                                    <option value="Msc. Christin Busch">Msc. Christin Busch</option>
+                                
+                                    <option value="Hamburg University">Hamburg University</option>
+                                
+                                    <option value="Dr. Michael Waibel">Dr. Michael Waibel</option>
+                                
+                                    <option value="Build4People">Build4People</option>
+                                
+                                    <option value="Otto-von-Guericke-Universtität Magdeburg">Otto-von-Guericke-Universtität Magdeburg</option>
+                                
+                                    <option value="Dr.  Anke  Blöbaum">Dr.  Anke  Blöbaum</option>
+                                
+                                    <option value="Prof. Dr. Ellen Matthies">Prof. Dr. Ellen Matthies</option>
+                                
+                                    <option value="Institut für Gebäudeenergetik, Thermotechnik und Energiespeicherung (IGTE)">Institut für Gebäudeenergetik, Thermotechnik und Energiespeicherung (IGTE)</option>
+                                
+                                    <option value="Prof. Dr. Dirk Schwede">Prof. Dr. Dirk Schwede</option>
+                                
+                                    <option value="EMP, Eble Messerschmidt Partner (SME)">EMP, Eble Messerschmidt Partner (SME)</option>
+                                
+                                    <option value="Dipl.-Ing. Rolf Messerschmidt">Dipl.-Ing. Rolf Messerschmidt</option>
+                                
+                                    <option value="Eberswalde University for Sustainable Development">Eberswalde University for Sustainable Development</option>
+                                
+                                    <option value="Prof. Dr. Jan-Peter Mund">Prof. Dr. Jan-Peter Mund</option>
+                                
+                                    <option value="INKEK GmbH (SME)">INKEK GmbH (SME)</option>
+                                
+                                    <option value="Prof. Dr. Lutz Katzschner">Prof. Dr. Lutz Katzschner</option>
+                                
+                                    <option value="International Water Management Institute (IWMI)">International Water Management Institute (IWMI)</option>
+                                
+                                    <option value="Dr.  Susanne  Bodach">Dr.  Susanne  Bodach</option>
+                                
+                                    <option value="Universität Magdeburg">Universität Magdeburg</option>
+                                
+                                    <option value=" Annalena  Becker"> Annalena  Becker</option>
+                                
+                                    <option value=" Ramune  Pansa"> Ramune  Pansa</option>
+                                
+                                    <option value="Eble Messerschmidt und Partner Part GmbH">Eble Messerschmidt und Partner Part GmbH</option>
+                                
+                                    <option value=" Nuria  Roig"> Nuria  Roig</option>
+                                
+                                    <option value="University of Hamburg">University of Hamburg</option>
+                                
+                                    <option value=" Ravi  Jayaweera"> Ravi  Jayaweera</option>
+                                
+                                    <option value="Eberswalde University for Sustainable Development ">Eberswalde University for Sustainable Development </option>
+                                
+                                    <option value=" Gulam  Mohiuddin"> Gulam  Mohiuddin</option>
+                                
+                                    <option value="INKEK GmbH">INKEK GmbH</option>
+                                
+                                    <option value=" Sebastian  Kupski"> Sebastian  Kupski</option>
+                                
+                                    <option value="Dr. Janalisa Hahne">Dr. Janalisa Hahne</option>
+                                
+                                    <option value="Fraunhofer IMW">Fraunhofer IMW</option>
+                                
+                                    <option value="  Henrik Beermann">  Henrik Beermann</option>
+                                
+                                    <option value="Dr. Christine Richter">Dr. Christine Richter</option>
+                                
+                                    <option value="CHARMS">CHARMS</option>
+                                
+                                    <option value="Fraunhofer IMW ">Fraunhofer IMW </option>
+                                
+                                    <option value=" Manuel Molina Vogelsang"> Manuel Molina Vogelsang</option>
+                                
+                                    <option value=" Urban Kaiser"> Urban Kaiser</option>
+                                
+                                    <option value="Uni Chiang Mai, School of Public Policy">Uni Chiang Mai, School of Public Policy</option>
+                                
+                                    <option value="Dr. Warathida Chaiyapha">Dr. Warathida Chaiyapha</option>
+                                
+                                    <option value="Fraunhofer IBP">Fraunhofer IBP</option>
+                                
+                                    <option value="Prof. Ralf  Kilian">Prof. Ralf  Kilian</option>
+                                
+                                    <option value="Prof. Martin  Krus">Prof. Martin  Krus</option>
+                                
+                                    <option value="Fraunhofer IEE">Fraunhofer IEE</option>
+                                
+                                    <option value="Dr. Maike  Buddensiek ">Dr. Maike  Buddensiek </option>
+                                
+                                    <option value=" Michael  Krause"> Michael  Krause</option>
+                                
+                                    <option value="Fraunhofer FOKUS">Fraunhofer FOKUS</option>
+                                
+                                    <option value=" Philipp  Lämmel"> Philipp  Lämmel</option>
+                                
+                                    <option value="  Nikolay Tcholtchev">  Nikolay Tcholtchev</option>
+                                
+                                    <option value="AT-Verband Stuttgart">AT-Verband Stuttgart</option>
+                                
+                                    <option value="Dr. Oliver Assmann">Dr. Oliver Assmann</option>
+                                
+                                    <option value="Dipl.-Geogr. Dieter Steinbach">Dipl.-Geogr. Dieter Steinbach</option>
+                                
+                                    <option value="Dipl.-Geogr. Andrea Schultheis">Dipl.-Geogr. Andrea Schultheis</option>
+                                
+                                    <option value="emplement!">emplement!</option>
+                                
+                                    <option value="Frankfurt University of Applied Sciences">Frankfurt University of Applied Sciences</option>
+                                
+                                    <option value="Dr. Susana Restrepo Rico">Dr. Susana Restrepo Rico</option>
+                                
+                                    <option value="Prof. Dr.-Ing. Michael Peterek">Prof. Dr.-Ing. Michael Peterek</option>
+                                
+                                    <option value="Ostfalia University of Applied Sciences">Ostfalia University of Applied Sciences</option>
+                                
+                                    <option value="Prof. Dr.-Ing. Artur Mennerich">Prof. Dr.-Ing. Artur Mennerich</option>
+                                
+                                    <option value="M.Sc. Mona Möller">M.Sc. Mona Möller</option>
+                                
+                                    <option value="University of Hohenheim">University of Hohenheim</option>
+                                
+                                    <option value="Dipl. Andreas Aron-Winkler">Dipl. Andreas Aron-Winkler</option>
+                                
+                                    <option value="Dr. Romuli Sebastian">Dr. Romuli Sebastian</option>
+                                
+                                    <option value="University Tübingen">University Tübingen</option>
+                                
+                                    <option value="Prof. Dr. Volker Hochschild">Prof. Dr. Volker Hochschild</option>
+                                
+                                    <option value="Dr. Gebhard Warth">Dr. Gebhard Warth</option>
+                                
+                                    <option value="Dr. Michael Schultze">Dr. Michael Schultze</option>
+                                
+                                    <option value="FloodAdaptVN">FloodAdaptVN</option>
+                                
+                                    <option value="IZES">IZES</option>
+                                
+                                    <option value="Dr. Ulrike Schinkel">Dr. Ulrike Schinkel</option>
+                                
+                                    <option value="M.Sc., Dipl.-Ing. Mike Speck">M.Sc., Dipl.-Ing. Mike Speck</option>
+                                
+                                    <option value=" Mike Speck"> Mike Speck</option>
+                                
+                                    <option value="DLR">DLR</option>
+                                
+                                    <option value="Dr. Felix Bachofer">Dr. Felix Bachofer</option>
+                                
+                                    <option value=" Juliane Huth"> Juliane Huth</option>
+                                
+                                    <option value="HUSC">HUSC</option>
+                                
+                                    <option value="Dr. Châu Dang Giáng Nguyen">Dr. Châu Dang Giáng Nguyen</option>
+                                
+                                    <option value="HUIS">HUIS</option>
+                                
+                                    <option value="Assoc. Prof. Linh Hoàng Khánh Nguyen">Assoc. Prof. Linh Hoàng Khánh Nguyen</option>
+                                
+                                    <option value="Moved to Uni Hamburg">Moved to Uni Hamburg</option>
+                                
+                                    <option value="Dr. Antje Katzschner">Dr. Antje Katzschner</option>
+                                
+                                    <option value="LMU">LMU</option>
+                                
+                                    <option value="Prof. Dr. Mathias Garschagen">Prof. Dr. Mathias Garschagen</option>
+                                
+                                    <option value="Dr. Andrea Reimuth">Dr. Andrea Reimuth</option>
+                                
+                                    <option value="Dr. Emlyn Yang">Dr. Emlyn Yang</option>
+                                
+                                    <option value="Prof. Matthias Garschagen">Prof. Matthias Garschagen</option>
+                                
+                                    <option value="LIRLAP">LIRLAP</option>
+                                
+                                    <option value="UNU-EHS">UNU-EHS</option>
+                                
+                                    <option value="Dr. Zita Sebesvari">Dr. Zita Sebesvari</option>
+                                
+                                    <option value="Dr. Souvignet Maxime">Dr. Souvignet Maxime</option>
+                                
+                                    <option value="Dr. Michael Hagenlocher">Dr. Michael Hagenlocher</option>
+                                
+                                    <option value=" Irfan Ullah"> Irfan Ullah</option>
+                                
+                                    <option value=" Andrea Ortiz-Vargas"> Andrea Ortiz-Vargas</option>
+                                
+                                    <option value=" Dominic Sett"> Dominic Sett</option>
+                                
+                                    <option value=" Eike Behre"> Eike Behre</option>
+                                
+                                    <option value=" Florian Waldschmidt"> Florian Waldschmidt</option>
+                                
+                                    <option value="Geomer GmbH">Geomer GmbH</option>
+                                
+                                    <option value=" Kerstin Büche"> Kerstin Büche</option>
+                                
+                                    <option value="Dr. Andre Assmann">Dr. Andre Assmann</option>
+                                
+                                    <option value="Unabhängiges Institut für Umweltfragen (UfU) e.V.">Unabhängiges Institut für Umweltfragen (UfU) e.V.</option>
+                                
+                                    <option value="Dr. Michael Zschiesche">Dr. Michael Zschiesche</option>
+                                
+                                    <option value=" Fabian Stolpe"> Fabian Stolpe</option>
+                                
+                                    <option value=" Sarah Kovac"> Sarah Kovac</option>
+                                
+                                    <option value=" Nicole Wozny"> Nicole Wozny</option>
+                                
+                                    <option value=" Niklas Müller"> Niklas Müller</option>
+                                
+                                    <option value="Dr. Trang Dao">Dr. Trang Dao</option>
+                                
+                                    <option value="GreenCityLabHu?">GreenCityLabHu?</option>
+                                
+                                    <option value="HU Berlin">HU Berlin</option>
+                                
+                                    <option value="Prof. Dr. Dagmar Haase">Prof. Dr. Dagmar Haase</option>
+                                
+                                    <option value="Dr. Sebastian Scheuer">Dr. Sebastian Scheuer</option>
+                                
+                                    <option value=" Jessica Jache"> Jessica Jache</option>
+                                
+                                    <option value="Thua Thien Hue Institute for Development Studies (HueIDS)">Thua Thien Hue Institute for Development Studies (HueIDS)</option>
+                                
+                                    <option value=" Cuong Cung"> Cuong Cung</option>
+                                
+                                    <option value=" Nhi Nguyen"> Nhi Nguyen</option>
+                                
+                                    <option value="Mientrung Institute for Scientific Research (MISR)">Mientrung Institute for Scientific Research (MISR)</option>
+                                
+                                    <option value=" Thi Binh Minh  Hoang"> Thi Binh Minh  Hoang</option>
+                                
+                                    <option value=" Dac Hoang Long Nguyen"> Dac Hoang Long Nguyen</option>
+                                
+                                    <option value="Hue University of Sciences (HUSC)">Hue University of Sciences (HUSC)</option>
+                                
+                                    <option value="Dr. Tung Nguyen Ngoc">Dr. Tung Nguyen Ngoc</option>
+                                
+                                    <option value="Did not find anything">Did not find anything</option>
+                                
+                                    <option value=" Ylan Kim Vo"> Ylan Kim Vo</option>
+                                
+                                    <option value=" Anh Thu Pham Thi"> Anh Thu Pham Thi</option>
+                                
+                                    <option value=" Juan Mercado"> Juan Mercado</option>
+                                
+                                    <option value=" Utia Suarma"> Utia Suarma</option>
+                                
+                                    <option value="Dr. (Emma) Dyah Rahmawati  Hizbaron">Dr. (Emma) Dyah Rahmawati  Hizbaron</option>
+                                
+                                    <option value=" Xu JI"> Xu JI</option>
+                                
+                                    <option value="Prof. Dr. Jian LIU">Prof. Dr. Jian LIU</option>
+                                
+                                    <option value="Prof. Dr. Gangyi TAN">Prof. Dr. Gangyi TAN</option>
+                                
+                                    <option value="PolyUrbanWaters">PolyUrbanWaters</option>
+                                
+                                    <option value="URA">URA</option>
+                                
+                                    <option value="TU Dortmund, Faculty of Spatial Planning, IRPUD">TU Dortmund, Faculty of Spatial Planning, IRPUD</option>
+                                
+                                    <option value="Prof. Dr. Stefan Greiving">Prof. Dr. Stefan Greiving</option>
+                                
+                                    <option value="Dr.-Ing. Wolfgang Scholz">Dr.-Ing. Wolfgang Scholz</option>
+                                
+                                    <option value="Dr. Du Juan">Dr. Du Juan</option>
+                                
+                                    <option value="Dr. Mathias Kaiser">Dr. Mathias Kaiser</option>
+                                
+                                    <option value="University Stuttgart">University Stuttgart</option>
+                                
+                                    <option value=" Hannes Lauer"> Hannes Lauer</option>
+                                
+                                    <option value="Prof. Jörn Birkmann">Prof. Jörn Birkmann</option>
+                                
+                                    <option value=" Pimnara Rodkul"> Pimnara Rodkul</option>
+                                
+                                    <option value="Faculty of Natural Re­sour­ces and Environment at the Vietnam National Uni­ver­sity of Agriculture ">Faculty of Natural Re­sour­ces and Environment at the Vietnam National Uni­ver­sity of Agriculture </option>
+                                
+                                    <option value="Prof. Tran Trong Phuong">Prof. Tran Trong Phuong</option>
+                                
+                                    <option value=" Hoang Le Huong"> Hoang Le Huong</option>
+                                
+                                    <option value=" Vu Thanh Bien"> Vu Thanh Bien</option>
+                                
+                                    <option value="Dr. Ngo Thanh Son">Dr. Ngo Thanh Son</option>
+                                
+                                    <option value="Prof. Thanh Mai Nguyen Thi">Prof. Thanh Mai Nguyen Thi</option>
+                                
+                                    <option value="The Urban Futures & Policy Research Unit (UFP) of Thammasat Uni­ver­sity">The Urban Futures & Policy Research Unit (UFP) of Thammasat Uni­ver­sity</option>
+                                
+                                    <option value=" Nontarit Bejrananda"> Nontarit Bejrananda</option>
+                                
+                                    <option value="Prof. Wijitbusaba Ann Marome">Prof. Wijitbusaba Ann Marome</option>
+                                
+                                    <option value="SURP Philippines">SURP Philippines</option>
+                                
+                                    <option value="Prof. David Yap">Prof. David Yap</option>
+                                
+                                    <option value="Prof. Carmeli Marie Chaves">Prof. Carmeli Marie Chaves</option>
+                                
+                                    <option value="Prof. Ma Sheilah Napalang">Prof. Ma Sheilah Napalang</option>
+                                
+                                    <option value=" Evelyn Lorenzo"> Evelyn Lorenzo</option>
+                                
+                                    <option value=" Vince Francisco Eugenio"> Vince Francisco Eugenio</option>
+                                
+                                    <option value=" Annlouise Genevieve Castro"> Annlouise Genevieve Castro</option>
+                                
+                                    <option value="Prof. Dina Cartagena Magnaye">Prof. Dina Cartagena Magnaye</option>
+                                
+                                    <option value=" Sonia Islam"> Sonia Islam</option>
+                                
+                                    <option value=" Beverly  Abad"> Beverly  Abad</option>
+                                
+                                    <option value="LMU / Moved to Uni Hamburg">LMU / Moved to Uni Hamburg</option>
+                                
+                                    <option value=" Antje  Katzschner"> Antje  Katzschner</option>
+                                
+                                    <option value="BORDA e.V.">BORDA e.V.</option>
+                                
+                                    <option value="Dr. Bernd Gutterer">Dr. Bernd Gutterer</option>
+                                
+                                    <option value=" Jati Kusumowati"> Jati Kusumowati</option>
+                                
+                                    <option value=" Fabio Nicoletti"> Fabio Nicoletti</option>
+                                
+                                    <option value=" Richard Hocking"> Richard Hocking</option>
+                                
+                                    <option value=" Bounchan  Khamphilayvong"> Bounchan  Khamphilayvong</option>
+                                
+                                    <option value=" Mang Opasith"> Mang Opasith</option>
+                                
+                                    <option value=" Hendra Gupta"> Hendra Gupta</option>
+                                
+                                    <option value="TH Köln">TH Köln</option>
+                                
+                                    <option value=" Xhesika  Hoxha"> Xhesika  Hoxha</option>
+                                
+                                    <option value=" Frederic  Hebbeker"> Frederic  Hebbeker</option>
+                                
+                                    <option value=" Hassan Abolenga"> Hassan Abolenga</option>
+                                
+                                    <option value="Prof. Dr. Lars Ribbe">Prof. Dr. Lars Ribbe</option>
+                                
+                                    <option value="TU Berlin">TU Berlin</option>
+                                
+                                    <option value=" Ania Wilk-Pham"> Ania Wilk-Pham</option>
+                                
+                                    <option value=" Elise  Nguyen"> Elise  Nguyen</option>
+                                
+                                    <option value=" Adrian Hodgson"> Adrian Hodgson</option>
+                                
+                                    <option value="Prof. Anke  Hagemann">Prof. Anke  Hagemann</option>
+                                
+                                    <option value=" Arina  Rahma"> Arina  Rahma</option>
+                                
+                                    <option value="Prof. Anke Hagemann">Prof. Anke Hagemann</option>
+                                
+                                    <option value=" Lukas Pappert"> Lukas Pappert</option>
+                                
+                                    <option value="Kota Kita">Kota Kita</option>
+                                
+                                    <option value=" Ahmed  Rifai "> Ahmed  Rifai </option>
+                                
+                                    <option value=" Icha  Hasanatun Nisa Thamarin "> Icha  Hasanatun Nisa Thamarin </option>
+                                
+                                    <option value=" Bisma Setiyadi"> Bisma Setiyadi</option>
+                                
+                                    <option value=" Asri  Septarizky"> Asri  Septarizky</option>
+                                
+                                    <option value=" Nisita Pradipta"> Nisita Pradipta</option>
+                                
+                                    <option value="AKSANSI">AKSANSI</option>
+                                
+                                    <option value=" Prasetyastuti Puspowardoyo"> Prasetyastuti Puspowardoyo</option>
+                                
+                                    <option value="Vietnam Academy of Water Resources">Vietnam Academy of Water Resources</option>
+                                
+                                    <option value="Dr. Tran Duc Trinh">Dr. Tran Duc Trinh</option>
+                                
+                                    <option value="Technische Hochschule Köln">Technische Hochschule Köln</option>
+                                
+                                    <option value=" Chahinaz Ziani"> Chahinaz Ziani</option>
+                                
+                                    <option value="University of Gadjah Mada">University of Gadjah Mada</option>
+                                
+                                    <option value="Prof.   Bakti  Setiawan">Prof.   Bakti  Setiawan</option>
+                                
+                                    <option value=" Lintang Nur Fadlillah"> Lintang Nur Fadlillah</option>
+                                
+                                    <option value="Asian Institute of Technology">Asian Institute of Technology</option>
+                                
+                                    <option value="Prof.   Thammarat  Koottatep">Prof.   Thammarat  Koottatep</option>
+                                
+                                    <option value="Free Hanseatic City of Bremen, Ministry for Climate, Environment, Mobility, Housing and Urban Development">Free Hanseatic City of Bremen, Ministry for Climate, Environment, Mobility, Housing and Urban Development</option>
+                                
+                                    <option value="Dr. Christof Voßeler">Dr. Christof Voßeler</option>
+                                
+                                    <option value="HAMBURG WASSER">HAMBURG WASSER</option>
+                                
+                                    <option value=" Claudia  Wendland"> Claudia  Wendland</option>
+                                
+                                    <option value=" Sonja Schlipf"> Sonja Schlipf</option>
+                                
+                                    <option value="CIUS">CIUS</option>
+                                
+                                    <option value="Dr. Tep  Makathy">Dr. Tep  Makathy</option>
+                                
+                                    <option value="TU Berlin, Habitat Unit">TU Berlin, Habitat Unit</option>
+                                
+                                    <option value="Dr. Kit Braybrooke">Dr. Kit Braybrooke</option>
+                                
+                                    <option value="Dr. Li FAN">Dr. Li FAN</option>
+                                
+                                    <option value=" Tino Imsirovic"> Tino Imsirovic</option>
+                                
+                                    <option value="TU Berlin, CCST">TU Berlin, CCST</option>
+                                
+                                    <option value=" Ava Lynam"> Ava Lynam</option>
+                                
+                                    <option value="Dr. Sigrun Abels">Dr. Sigrun Abels</option>
+                                
+                                    <option value=" Yiqi Zhang"> Yiqi Zhang</option>
+                                
+                                    <option value="TU Berlin, CERT">TU Berlin, CERT</option>
+                                
+                                    <option value="Prof. Dr. Vera Susanne Rotter">Prof. Dr. Vera Susanne Rotter</option>
+                                
+                                    <option value="Dr.  Bing XUE">Dr.  Bing XUE</option>
+                                
+                                    <option value=" Sijia TANG"> Sijia TANG</option>
+                                
+                                    <option value=" Yanzi Zhou"> Yanzi Zhou</option>
+                                
+                                    <option value="Bauhaus Uni Weimar">Bauhaus Uni Weimar</option>
+                                
+                                    <option value="Prof. Dr. Sigrun Langner">Prof. Dr. Sigrun Langner</option>
+                                
+                                    <option value="Dr. des Maria Frölich-Kulik">Dr. des Maria Frölich-Kulik</option>
+                                
+                                    <option value=" Yulin Zhang"> Yulin Zhang</option>
+                                
+                                    <option value=" Karl Beelen"> Karl Beelen</option>
+                                
+                                    <option value=" Jonas Langbein"> Jonas Langbein</option>
+                                
+                                    <option value="Leibniz Institute of Ecological Urban and Regional Development (IOER)">Leibniz Institute of Ecological Urban and Regional Development (IOER)</option>
+                                
+                                    <option value="Dr. Suili XIAO">Dr. Suili XIAO</option>
+                                
+                                    <option value="Prof. Dr. Wolfgang Wende">Prof. Dr. Wolfgang Wende</option>
+                                
+                                    <option value=" Maximilian Haase"> Maximilian Haase</option>
+                                
+                                    <option value="UN HABITAT, Nairobi">UN HABITAT, Nairobi</option>
+                                
+                                    <option value="Dr. Remy Sietchiping">Dr. Remy Sietchiping</option>
+                                
+                                    <option value=" Grace Githiri"> Grace Githiri</option>
+                                
+                                    <option value="Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning">Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning</option>
+                                
+                                    <option value="Prof. Dr. Guiqing Yang">Prof. Dr. Guiqing Yang</option>
+                                
+                                    <option value="Dr. Huang Huang">Dr. Huang Huang</option>
+                                
+                                    <option value="Dr. Daijun SONG">Dr. Daijun SONG</option>
+                                
+                                    <option value=" Yizheng WANG"> Yizheng WANG</option>
+                                
+                                    <option value=" Liyao WANG"> Liyao WANG</option>
+                                
+                                    <option value="Zhejiang University, Institute of Landscape Architecture">Zhejiang University, Institute of Landscape Architecture</option>
+                                
+                                    <option value="Dr.-Ing. Yuting Xie">Dr.-Ing. Yuting Xie</option>
+                                
+                                    <option value=" Jiaxin YING"> Jiaxin YING</option>
+                                
+                                    <option value="ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES">ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES</option>
+                                
+                                    <option value="Prof. Dr. Weixiang WU">Prof. Dr. Weixiang WU</option>
+                                
+                                    <option value="Dr. Yong QIN">Dr. Yong QIN</option>
+                                
+                                    <option value="Prof. Dr. Lingli LU">Prof. Dr. Lingli LU</option>
+                                
+                                    <option value="Prof. Dr. Shengke TIAN">Prof. Dr. Shengke TIAN</option>
+                                
+                                    <option value="TONGJI UNIVERSITY SHANGHAI, ?CENTER FOR ECOLOGICAL WISDOM AND PRACTICE RESEARCH">TONGJI UNIVERSITY SHANGHAI, ?CENTER FOR ECOLOGICAL WISDOM AND PRACTICE RESEARCH</option>
+                                
+                                    <option value="Prof. Dr. Wentao  YAN">Prof. Dr. Wentao  YAN</option>
+                                
+                                    <option value=" Hui CHEN"> Hui CHEN</option>
+                                
+                                    <option value="SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE">SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE</option>
+                                
+                                    <option value="Prof. Dr. Yong LIU">Prof. Dr. Yong LIU</option>
+                                
+                                    <option value="Dr. Jinwei  HAO">Dr. Jinwei  HAO</option>
+                                
+                                    <option value="Dr. Jun JIANG">Dr. Jun JIANG</option>
+                                
+                                    <option value="Prof. Dr. Yongfu LI">Prof. Dr. Yongfu LI</option>
+                                
+                                    <option value="Dr. Fengqing LI">Dr. Fengqing LI</option>
+                                
+                                    <option value="Prof. Dr. Xiulin SUN">Prof. Dr. Xiulin SUN</option>
+                                
+                                    <option value="Technische Universität Berlin">Technische Universität Berlin</option>
+                                
+                                    <option value="Prof. Dr. em. Johannes Küchler">Prof. Dr. em. Johannes Küchler</option>
+                                
+                                    <option value="Freie Universität Berlin">Freie Universität Berlin</option>
+                                
+                                    <option value="Prof. Dr. Elena  Meyer- Clement ">Prof. Dr. Elena  Meyer- Clement </option>
+                                
+                                    <option value="Hafen City Universität Hamburg">Hafen City Universität Hamburg</option>
+                                
+                                    <option value="Prof. Antje  Stokmann">Prof. Antje  Stokmann</option>
+                                
+                                    <option value="Curator and Author">Curator and Author</option>
+                                
+                                    <option value="Dr. Eduard Kögel">Dr. Eduard Kögel</option>
+                                
+                                    <option value="Federal Agency for Nature Conservation
+ (Bnf) Division of International Nature Conservation (Bonn)">Federal Agency for Nature Conservation
+ (Bnf) Division of International Nature Conservation (Bonn)</option>
+                                
+                                    <option value="Prof. Dr. Beate Jessel">Prof. Dr. Beate Jessel</option>
+                                
+                                    <option value="Tongji University, CAUP">Tongji University, CAUP</option>
+                                
+                                    <option value="Prof. Dr. em. Min ZHAO">Prof. Dr. em. Min ZHAO</option>
+                                
+                                    <option value="Chinese Academy of Surveying and Mapping">Chinese Academy of Surveying and Mapping</option>
+                                
+                                    <option value="Dr. Wei HOU">Dr. Wei HOU</option>
+                                
+                                    <option value="THE UNIVERSITY OF NORTH CAROLINA AT CHARLOTTE, DEPARTMENT OF GEOGRAPHY AND EARTH SCIENCES">THE UNIVERSITY OF NORTH CAROLINA AT CHARLOTTE, DEPARTMENT OF GEOGRAPHY AND EARTH SCIENCES</option>
+                                
+                                    <option value="Dr. Wie-Ning XIANG">Dr. Wie-Ning XIANG</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": "IMECOGIP", "id": "Ruhr University Bochum", "label": "Ruhr University Bochum", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "IMECOGIP", "id": "Prof. Dr. Harald Zepp", "label": "Prof. Dr. Harald Zepp", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "IMECOGIP", "id": "Dr.\u00a0 Malte Buehrs", "label": "Dr.\u00a0 Malte Buehrs", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "IMECOGIP", "label": "IMECOGIP", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "IMECOGIP", "id": "Research Institute for Regional and Urban Development", "label": "Research Institute for Regional and Urban Development", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "IMECOGIP", "id": "Dr.\u00a0 Kathrin Specht", "label": "Dr.\u00a0 Kathrin Specht", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "IMECOGIP", "id": "Msc. Christin Busch", "label": "Msc. Christin Busch", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Hamburg University", "label": "Hamburg University", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Dr. Michael Waibel", "label": "Dr. Michael Waibel", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "Build4People", "label": "Build4People", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "Build4People", "id": "Otto-von-Guericke-Universtit\u00e4t Magdeburg", "label": "Otto-von-Guericke-Universtit\u00e4t Magdeburg", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "Build4People", "id": "Dr.  Anke  Bl\u00f6baum", "label": "Dr.  Anke  Bl\u00f6baum", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Prof. Dr. Ellen Matthies", "label": "Prof. Dr. Ellen Matthies", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Institut f\u00fcr Geb\u00e4udeenergetik, Thermotechnik und Energiespeicherung (IGTE)", "label": "Institut f\u00fcr Geb\u00e4udeenergetik, Thermotechnik und Energiespeicherung (IGTE)", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Prof. Dr. Dirk Schwede", "label": "Prof. Dr. Dirk Schwede", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "EMP, Eble Messerschmidt Partner (SME)", "label": "EMP, Eble Messerschmidt Partner (SME)", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Dipl.-Ing. Rolf Messerschmidt", "label": "Dipl.-Ing. Rolf Messerschmidt", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Eberswalde University for Sustainable Development", "label": "Eberswalde University for Sustainable Development", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Prof. Dr. Jan-Peter Mund", "label": "Prof. Dr. Jan-Peter Mund", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "INKEK GmbH (SME)", "label": "INKEK GmbH (SME)", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Prof. Dr. Lutz Katzschner", "label": "Prof. Dr. Lutz Katzschner", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "International Water Management Institute (IWMI)", "label": "International Water Management Institute (IWMI)", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Dr.  Susanne  Bodach", "label": "Dr.  Susanne  Bodach", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Universit\u00e4t Magdeburg", "label": "Universit\u00e4t Magdeburg", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "Build4People", "id": " Annalena  Becker", "label": " Annalena  Becker", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": " Ramune  Pansa", "label": " Ramune  Pansa", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Eble Messerschmidt und Partner Part GmbH", "label": "Eble Messerschmidt und Partner Part GmbH", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": " Nuria  Roig", "label": " Nuria  Roig", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "University of Hamburg", "label": "University of Hamburg", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": " Ravi  Jayaweera", "label": " Ravi  Jayaweera", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Eberswalde University for Sustainable Development ", "label": "Eberswalde University for Sustainable Development ", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": " Gulam  Mohiuddin", "label": " Gulam  Mohiuddin", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "INKEK GmbH", "label": "INKEK GmbH", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "Build4People", "id": " Sebastian  Kupski", "label": " Sebastian  Kupski", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "Build4People", "id": "Dr. Janalisa Hahne", "label": "Dr. Janalisa Hahne", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Fraunhofer IMW", "label": "Fraunhofer IMW", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "CHARMS", "id": "\u00a0 Henrik Beermann", "label": "\u00a0 Henrik Beermann", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Dr. Christine Richter", "label": "Dr. Christine Richter", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "CHARMS", "label": "CHARMS", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Fraunhofer IMW ", "label": "Fraunhofer IMW ", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "CHARMS", "id": " Manuel Molina Vogelsang", "label": " Manuel Molina Vogelsang", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": " Urban Kaiser", "label": " Urban Kaiser", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Uni Chiang Mai, School of Public Policy", "label": "Uni Chiang Mai, School of Public Policy", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Dr. Warathida Chaiyapha", "label": "Dr. Warathida Chaiyapha", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Fraunhofer IBP", "label": "Fraunhofer IBP", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Prof. Ralf\u00a0 Kilian", "label": "Prof. Ralf\u00a0 Kilian", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Prof. Martin\u00a0 Krus", "label": "Prof. Martin\u00a0 Krus", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Fraunhofer IEE", "label": "Fraunhofer IEE", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Dr. Maike\u00a0 Buddensiek\u00a0", "label": "Dr. Maike\u00a0 Buddensiek\u00a0", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": " Michael\u00a0 Krause", "label": " Michael\u00a0 Krause", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "Fraunhofer FOKUS", "label": "Fraunhofer FOKUS", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "CHARMS", "id": " Philipp\u00a0 L\u00e4mmel", "label": " Philipp\u00a0 L\u00e4mmel", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "CHARMS", "id": "\u00a0 Nikolay Tcholtchev", "label": "\u00a0 Nikolay Tcholtchev", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "AT-Verband Stuttgart", "label": "AT-Verband Stuttgart", "shape": "dot", "size": 15}, {"font": {"color": "white"}, "group": "emplement!", "id": "Dr. Oliver Assmann", "label": "Dr. Oliver Assmann", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "Dipl.-Geogr. Dieter Steinbach", "label": "Dipl.-Geogr. Dieter Steinbach", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "Dipl.-Geogr. Andrea Schultheis", "label": "Dipl.-Geogr. Andrea Schultheis", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "emplement!", "label": "emplement!", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "emplement!", "id": "Frankfurt University of Applied Sciences", "label": "Frankfurt University of Applied Sciences", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "emplement!", "id": "Dr. Susana Restrepo Rico", "label": "Dr. Susana Restrepo Rico", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "Prof. Dr.-Ing. Michael Peterek", "label": "Prof. Dr.-Ing. Michael Peterek", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "Ostfalia University of Applied Sciences", "label": "Ostfalia University of Applied Sciences", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "emplement!", "id": "Prof. Dr.-Ing. Artur Mennerich", "label": "Prof. Dr.-Ing. Artur Mennerich", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "M.Sc. Mona M\u00f6ller", "label": "M.Sc. Mona M\u00f6ller", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "University of Hohenheim", "label": "University of Hohenheim", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "emplement!", "id": "Dipl. Andreas Aron-Winkler", "label": "Dipl. Andreas Aron-Winkler", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "Dr. Romuli Sebastian", "label": "Dr. Romuli Sebastian", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "University T\u00fcbingen", "label": "University T\u00fcbingen", "shape": "dot", "size": 15}, {"font": {"color": "white"}, "group": "emplement!", "id": "Prof. Dr. Volker Hochschild", "label": "Prof. Dr. Volker Hochschild", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "Dr. Gebhard Warth", "label": "Dr. Gebhard Warth", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Michael Schultze", "label": "Dr. Michael Schultze", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "FloodAdaptVN", "label": "FloodAdaptVN", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "emplement!", "id": "IZES", "label": "IZES", "shape": "dot", "size": 15}, {"font": {"color": "white"}, "group": "emplement!", "id": "Dr. Ulrike Schinkel", "label": "Dr. Ulrike Schinkel", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "emplement!", "id": "M.Sc., Dipl.-Ing. Mike Speck", "label": "M.Sc., Dipl.-Ing. Mike Speck", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": " Mike Speck", "label": " Mike Speck", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "DLR", "label": "DLR", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Felix Bachofer", "label": "Dr. Felix Bachofer", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": " Juliane Huth", "label": " Juliane Huth", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "HUSC", "label": "HUSC", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Ch\u00e2u Dang Gi\u00e1ng Nguyen", "label": "Dr. Ch\u00e2u Dang Gi\u00e1ng Nguyen", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "HUIS", "label": "HUIS", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Assoc. Prof. Linh Ho\u00e0ng Kh\u00e1nh Nguyen", "label": "Assoc. Prof. Linh Ho\u00e0ng Kh\u00e1nh Nguyen", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Moved to Uni Hamburg", "label": "Moved to Uni Hamburg", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Antje Katzschner", "label": "Dr. Antje Katzschner", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "LMU", "label": "LMU", "shape": "dot", "size": 20}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Prof. Dr. Mathias Garschagen", "label": "Prof. Dr. Mathias Garschagen", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Andrea Reimuth", "label": "Dr. Andrea Reimuth", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Dr. Emlyn Yang", "label": "Dr. Emlyn Yang", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. Matthias Garschagen", "label": "Prof. Matthias Garschagen", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "LIRLAP", "label": "LIRLAP", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "UNU-EHS", "label": "UNU-EHS", "shape": "dot", "size": 40}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Zita Sebesvari", "label": "Dr. Zita Sebesvari", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Souvignet Maxime", "label": "Dr. Souvignet Maxime", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Michael Hagenlocher", "label": "Dr. Michael Hagenlocher", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": " Irfan Ullah", "label": " Irfan Ullah", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": " Andrea Ortiz-Vargas", "label": " Andrea Ortiz-Vargas", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": " Dominic Sett", "label": " Dominic Sett", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": " Eike Behre", "label": " Eike Behre", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": " Florian Waldschmidt", "label": " Florian Waldschmidt", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Geomer GmbH", "label": "Geomer GmbH", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": " Kerstin B\u00fcche", "label": " Kerstin B\u00fcche", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "FloodAdaptVN", "id": "Dr. Andre Assmann", "label": "Dr. Andre Assmann", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "label": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "shape": "dot", "size": 30}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Dr. Michael Zschiesche", "label": "Dr. Michael Zschiesche", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Fabian Stolpe", "label": " Fabian Stolpe", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Sarah Kovac", "label": " Sarah Kovac", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Nicole Wozny", "label": " Nicole Wozny", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Niklas M\u00fcller", "label": " Niklas M\u00fcller", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Dr. Trang Dao", "label": "Dr. Trang Dao", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "GreenCityLabHu?", "label": "GreenCityLabHu?", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "HU Berlin", "label": "HU Berlin", "shape": "dot", "size": 15}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Prof. Dr. Dagmar Haase", "label": "Prof. Dr. Dagmar Haase", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Dr. Sebastian Scheuer", "label": "Dr. Sebastian Scheuer", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Jessica Jache", "label": " Jessica Jache", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Thua Thien Hue Institute for Development Studies (HueIDS)", "label": "Thua Thien Hue Institute for Development Studies (HueIDS)", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Cuong Cung", "label": " Cuong Cung", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Nhi Nguyen", "label": " Nhi Nguyen", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Mientrung Institute for Scientific Research (MISR)", "label": "Mientrung Institute for Scientific Research (MISR)", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Thi\u00a0Binh Minh\u00a0 Hoang", "label": " Thi\u00a0Binh Minh\u00a0 Hoang", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Dac Hoang Long Nguyen", "label": " Dac Hoang Long Nguyen", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Hue University of Sciences (HUSC)", "label": "Hue University of Sciences (HUSC)", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Dr. Tung Nguyen Ngoc", "label": "Dr. Tung Nguyen Ngoc", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": "Did not find anything", "label": "Did not find anything", "shape": "dot", "size": 40}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Ylan Kim Vo", "label": " Ylan Kim Vo", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "GreenCityLabHu?", "id": " Anh Thu Pham Thi", "label": " Anh Thu Pham Thi", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Juan Mercado", "label": " Juan Mercado", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Utia Suarma", "label": " Utia Suarma", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Dr. (Emma) Dyah Rahmawati\u00a0 Hizbaron", "label": "Dr. (Emma) Dyah Rahmawati\u00a0 Hizbaron", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Xu JI", "label": " Xu JI", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Jian LIU", "label": "Prof. Dr. Jian LIU", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Gangyi TAN", "label": "Prof. Dr. Gangyi TAN", "shape": "dot", "size": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "PolyUrbanWaters", "label": "PolyUrbanWaters", "shape": "dot", "size": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "URA", "label": "URA", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "TU Dortmund, Faculty of Spatial Planning, IRPUD", "label": "TU Dortmund, Faculty of Spatial Planning, IRPUD", "shape": "dot", "size": 20}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. Dr. Stefan Greiving", "label": "Prof. Dr. Stefan Greiving", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Dr.-Ing. Wolfgang Scholz", "label": "Dr.-Ing. Wolfgang Scholz", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Dr. Du Juan", "label": "Dr. Du Juan", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Dr. Mathias Kaiser", "label": "Dr. Mathias Kaiser", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "University Stuttgart", "label": "University Stuttgart", "shape": "dot", "size": 15}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Hannes Lauer", "label": " Hannes Lauer", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. J\u00f6rn Birkmann", "label": "Prof. J\u00f6rn Birkmann", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Pimnara Rodkul", "label": " Pimnara Rodkul", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Faculty of Natural Re\u00adsour\u00adces and Environment at the Vietnam National Uni\u00adver\u00adsity of Agriculture ", "label": "Faculty of Natural Re\u00adsour\u00adces and Environment at the Vietnam National Uni\u00adver\u00adsity of Agriculture ", "shape": "dot", "size": 25}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. Tran Trong Phuong", "label": "Prof. Tran Trong Phuong", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Hoang Le Huong", "label": " Hoang Le Huong", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Vu Thanh Bien", "label": " Vu Thanh Bien", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Dr. Ngo Thanh Son", "label": "Dr. Ngo Thanh Son", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. Thanh Mai Nguyen Thi", "label": "Prof. Thanh Mai Nguyen Thi", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "The Urban Futures \u0026 Policy Research Unit (UFP) of Thammasat Uni\u00adver\u00adsity", "label": "The Urban Futures \u0026 Policy Research Unit (UFP) of Thammasat Uni\u00adver\u00adsity", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Nontarit Bejrananda", "label": " Nontarit Bejrananda", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. Wijitbusaba Ann Marome", "label": "Prof. Wijitbusaba Ann Marome", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "SURP Philippines", "label": "SURP Philippines", "shape": "dot", "size": 45}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. David Yap", "label": "Prof. David Yap", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. Carmeli Marie Chaves", "label": "Prof. Carmeli Marie Chaves", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. Ma Sheilah Napalang", "label": "Prof. Ma Sheilah Napalang", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Evelyn Lorenzo", "label": " Evelyn Lorenzo", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Vince Francisco Eugenio", "label": " Vince Francisco Eugenio", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Annlouise Genevieve Castro", "label": " Annlouise Genevieve Castro", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "Prof. Dina Cartagena Magnaye", "label": "Prof. Dina Cartagena Magnaye", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Sonia Islam", "label": " Sonia Islam", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Beverly\u00a0 Abad", "label": " Beverly\u00a0 Abad", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": "LMU / Moved to Uni Hamburg", "label": "LMU / Moved to Uni Hamburg", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "LIRLAP", "id": " Antje\u00a0 Katzschner", "label": " Antje\u00a0 Katzschner", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "BORDA e.V.", "label": "BORDA e.V.", "shape": "dot", "size": 35}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Dr. Bernd Gutterer", "label": "Dr. Bernd Gutterer", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Jati Kusumowati", "label": " Jati Kusumowati", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Fabio Nicoletti", "label": " Fabio Nicoletti", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Richard Hocking", "label": " Richard Hocking", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Bounchan\u00a0 Khamphilayvong", "label": " Bounchan\u00a0 Khamphilayvong", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Mang Opasith", "label": " Mang Opasith", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Hendra Gupta", "label": " Hendra Gupta", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "TH K\u00f6ln", "label": "TH K\u00f6ln", "shape": "dot", "size": 20}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Xhesika\u00a0 Hoxha", "label": " Xhesika\u00a0 Hoxha", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Frederic\u00a0 Hebbeker", "label": " Frederic\u00a0 Hebbeker", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Hassan Abolenga", "label": " Hassan Abolenga", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Prof. Dr. Lars Ribbe", "label": "Prof. Dr. Lars Ribbe", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "TU Berlin", "label": "TU Berlin", "shape": "dot", "size": 35}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Ania Wilk-Pham", "label": " Ania Wilk-Pham", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Elise\u00a0 Nguyen", "label": " Elise\u00a0 Nguyen", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Adrian Hodgson", "label": " Adrian Hodgson", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Prof. Anke  Hagemann", "label": "Prof. Anke  Hagemann", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Arina  Rahma", "label": " Arina  Rahma", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Anke Hagemann", "label": "Prof. Anke Hagemann", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Lukas Pappert", "label": " Lukas Pappert", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Kota Kita", "label": "Kota Kita", "shape": "dot", "size": 25}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Ahmed\u00a0 Rifai\u00a0", "label": " Ahmed\u00a0 Rifai\u00a0", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Icha\u00a0 Hasanatun Nisa Thamarin\u00a0", "label": " Icha\u00a0 Hasanatun Nisa Thamarin\u00a0", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Bisma Setiyadi", "label": " Bisma Setiyadi", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Asri  Septarizky", "label": " Asri  Septarizky", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Nisita Pradipta", "label": " Nisita Pradipta", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "AKSANSI", "label": "AKSANSI", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Prasetyastuti Puspowardoyo", "label": " Prasetyastuti Puspowardoyo", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Vietnam Academy of Water Resources", "label": "Vietnam Academy of Water Resources", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Dr. Tran Duc Trinh", "label": "Dr. Tran Duc Trinh", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Technische Hochschule K\u00f6ln", "label": "Technische Hochschule K\u00f6ln", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Chahinaz Ziani", "label": " Chahinaz Ziani", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "University of Gadjah Mada", "label": "University of Gadjah Mada", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Prof.\u00a0\u00a0 Bakti\u00a0 Setiawan", "label": "Prof.\u00a0\u00a0 Bakti\u00a0 Setiawan", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Lintang Nur Fadlillah", "label": " Lintang Nur Fadlillah", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Asian Institute of Technology", "label": "Asian Institute of Technology", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Prof.\u00a0\u00a0 Thammarat\u00a0 Koottatep", "label": "Prof.\u00a0\u00a0 Thammarat\u00a0 Koottatep", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Free Hanseatic City of Bremen, Ministry for Climate, Environment, Mobility, Housing and Urban Development", "label": "Free Hanseatic City of Bremen, Ministry for Climate, Environment, Mobility, Housing and Urban Development", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Dr. Christof Vo\u00dfeler", "label": "Dr. Christof Vo\u00dfeler", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "HAMBURG WASSER", "label": "HAMBURG WASSER", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Claudia\u00a0 Wendland", "label": " Claudia\u00a0 Wendland", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": " Sonja Schlipf", "label": " Sonja Schlipf", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "CIUS", "label": "CIUS", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "PolyUrbanWaters", "id": "Dr. Tep\u00a0 Makathy", "label": "Dr. Tep\u00a0 Makathy", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "TU Berlin, Habitat Unit", "label": "TU Berlin, Habitat Unit", "shape": "dot", "size": 15}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Kit Braybrooke", "label": "Dr. Kit Braybrooke", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Li FAN", "label": "Dr. Li FAN", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Tino Imsirovic", "label": " Tino Imsirovic", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "TU Berlin, CCST", "label": "TU Berlin, CCST", "shape": "dot", "size": 15}, {"font": {"color": "white"}, "group": "URA", "id": " Ava Lynam", "label": " Ava Lynam", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Sigrun Abels", "label": "Dr. Sigrun Abels", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Yiqi Zhang", "label": " Yiqi Zhang", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "TU Berlin, CERT", "label": "TU Berlin, CERT", "shape": "dot", "size": 20}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Vera Susanne Rotter", "label": "Prof. Dr. Vera Susanne Rotter", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr.\u00a0 Bing XUE", "label": "Dr.\u00a0 Bing XUE", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Sijia TANG", "label": " Sijia TANG", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Yanzi Zhou", "label": " Yanzi Zhou", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Bauhaus Uni Weimar", "label": "Bauhaus Uni Weimar", "shape": "dot", "size": 25}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Sigrun Langner", "label": "Prof. Dr. Sigrun Langner", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. des Maria Fr\u00f6lich-Kulik", "label": "Dr. des Maria Fr\u00f6lich-Kulik", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Yulin Zhang", "label": " Yulin Zhang", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Karl Beelen", "label": " Karl Beelen", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Jonas Langbein", "label": " Jonas Langbein", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Leibniz Institute of Ecological Urban and Regional Development (IOER)", "label": "Leibniz Institute of Ecological Urban and Regional Development (IOER)", "shape": "dot", "size": 15}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Suili XIAO", "label": "Dr. Suili XIAO", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Wolfgang Wende", "label": "Prof. Dr. Wolfgang Wende", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Maximilian Haase", "label": " Maximilian Haase", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "UN HABITAT, Nairobi", "label": "UN HABITAT, Nairobi", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Remy Sietchiping", "label": "Dr. Remy Sietchiping", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Grace Githiri", "label": " Grace Githiri", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning", "label": "Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning", "shape": "dot", "size": 25}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Guiqing Yang", "label": "Prof. Dr. Guiqing Yang", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Huang Huang", "label": "Dr. Huang Huang", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Daijun SONG", "label": "Dr. Daijun SONG", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Yizheng WANG", "label": " Yizheng WANG", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Liyao WANG", "label": " Liyao WANG", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Zhejiang University, Institute of Landscape Architecture", "label": "Zhejiang University, Institute of Landscape Architecture", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "URA", "id": "Dr.-Ing. Yuting Xie", "label": "Dr.-Ing. Yuting Xie", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Jiaxin YING", "label": " Jiaxin YING", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES", "label": "ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES", "shape": "dot", "size": 20}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Weixiang WU", "label": "Prof. Dr. Weixiang WU", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Yong QIN", "label": "Dr. Yong QIN", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Lingli LU", "label": "Prof. Dr. Lingli LU", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Shengke TIAN", "label": "Prof. Dr. Shengke TIAN", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "TONGJI UNIVERSITY SHANGHAI, ?CENTER FOR ECOLOGICAL WISDOM AND PRACTICE RESEARCH", "label": "TONGJI UNIVERSITY SHANGHAI, ?CENTER FOR ECOLOGICAL WISDOM AND PRACTICE RESEARCH", "shape": "dot", "size": 10}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Wentao\u00a0 YAN", "label": "Prof. Dr. Wentao\u00a0 YAN", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": " Hui CHEN", "label": " Hui CHEN", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "label": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "shape": "dot", "size": 30}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Yong LIU", "label": "Prof. Dr. Yong LIU", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Jinwei\u00a0 HAO", "label": "Dr. Jinwei\u00a0 HAO", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Jun JIANG", "label": "Dr. Jun JIANG", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Yongfu LI", "label": "Prof. Dr. Yongfu LI", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Fengqing LI", "label": "Dr. Fengqing LI", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Xiulin SUN", "label": "Prof. Dr. Xiulin SUN", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Technische Universit\u00e4t Berlin", "label": "Technische Universit\u00e4t Berlin", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. em. Johannes K\u00fcchler", "label": "Prof. Dr. em. Johannes K\u00fcchler", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Freie Universit\u00e4t Berlin", "label": "Freie Universit\u00e4t Berlin", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Elena\u00a0 Meyer- Clement\u00a0", "label": "Prof. Dr. Elena\u00a0 Meyer- Clement\u00a0", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Hafen City Universit\u00e4t Hamburg", "label": "Hafen City Universit\u00e4t Hamburg", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Antje\u00a0 Stokmann", "label": "Prof. Antje\u00a0 Stokmann", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Curator and Author", "label": "Curator and Author", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Eduard K\u00f6gel", "label": "Dr. Eduard K\u00f6gel", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Federal Agency for Nature Conservation\n (Bnf) Division of International Nature Conservation (Bonn)", "label": "Federal Agency for Nature Conservation\n (Bnf) Division of International Nature Conservation (Bonn)", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. Beate Jessel", "label": "Prof. Dr. Beate Jessel", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Tongji University, CAUP", "label": "Tongji University, CAUP", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Prof. Dr. em. Min ZHAO", "label": "Prof. Dr. em. Min ZHAO", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Chinese Academy of Surveying and Mapping", "label": "Chinese Academy of Surveying and Mapping", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Wei HOU", "label": "Dr. Wei HOU", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "THE UNIVERSITY OF NORTH CAROLINA AT CHARLOTTE, DEPARTMENT OF GEOGRAPHY AND EARTH SCIENCES", "label": "THE UNIVERSITY OF NORTH CAROLINA AT CHARLOTTE, DEPARTMENT OF GEOGRAPHY AND EARTH SCIENCES", "shape": "dot", "size": 5}, {"font": {"color": "white"}, "group": "URA", "id": "Dr. Wie-Ning XIANG", "label": "Dr. Wie-Ning XIANG", "shape": "dot", "size": 5}]);
+                  edges = new vis.DataSet([{"Weight": 1, "from": "Ruhr University Bochum", "to": "Prof. Dr. Harald Zepp", "width": 1}, {"Weight": 1, "from": "Ruhr University Bochum", "to": "Dr.\u00a0 Malte Buehrs", "width": 1}, {"from": "Ruhr University Bochum", "to": "IMECOGIP", "width": 1}, {"Weight": 1, "from": "Research Institute for Regional and Urban Development", "to": "Dr.\u00a0 Kathrin Specht", "width": 1}, {"Weight": 1, "from": "Research Institute for Regional and Urban Development", "to": "Msc. Christin Busch", "width": 1}, {"from": "Research Institute for Regional and Urban Development", "to": "IMECOGIP", "width": 1}, {"Weight": 1, "from": "Hamburg University", "to": "Dr. Michael Waibel", "width": 1}, {"from": "Hamburg University", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "Otto-von-Guericke-Universtit\u00e4t Magdeburg", "to": "Dr.  Anke  Bl\u00f6baum", "width": 1}, {"Weight": 1, "from": "Otto-von-Guericke-Universtit\u00e4t Magdeburg", "to": "Prof. Dr. Ellen Matthies", "width": 1}, {"from": "Otto-von-Guericke-Universtit\u00e4t Magdeburg", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "Institut f\u00fcr Geb\u00e4udeenergetik, Thermotechnik und Energiespeicherung (IGTE)", "to": "Prof. Dr. Dirk Schwede", "width": 1}, {"from": "Institut f\u00fcr Geb\u00e4udeenergetik, Thermotechnik und Energiespeicherung (IGTE)", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "EMP, Eble Messerschmidt Partner (SME)", "to": "Dipl.-Ing. Rolf Messerschmidt", "width": 1}, {"from": "EMP, Eble Messerschmidt Partner (SME)", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "Eberswalde University for Sustainable Development", "to": "Prof. Dr. Jan-Peter Mund", "width": 1}, {"from": "Eberswalde University for Sustainable Development", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "INKEK GmbH (SME)", "to": "Prof. Dr. Lutz Katzschner", "width": 1}, {"from": "INKEK GmbH (SME)", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "International Water Management Institute (IWMI)", "to": "Dr.  Susanne  Bodach", "width": 1}, {"from": "International Water Management Institute (IWMI)", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "Universit\u00e4t Magdeburg", "to": " Annalena  Becker", "width": 1}, {"Weight": 1, "from": "Universit\u00e4t Magdeburg", "to": " Ramune  Pansa", "width": 1}, {"from": "Universit\u00e4t Magdeburg", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "Eble Messerschmidt und Partner Part GmbH", "to": " Nuria  Roig", "width": 1}, {"from": "Eble Messerschmidt und Partner Part GmbH", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "University of Hamburg", "to": " Ravi  Jayaweera", "width": 1}, {"from": "University of Hamburg", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "Eberswalde University for Sustainable Development ", "to": " Gulam  Mohiuddin", "width": 1}, {"from": "Eberswalde University for Sustainable Development ", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "INKEK GmbH", "to": " Sebastian  Kupski", "width": 1}, {"Weight": 1, "from": "INKEK GmbH", "to": "Dr. Janalisa Hahne", "width": 1}, {"from": "INKEK GmbH", "to": "Build4People", "width": 1}, {"Weight": 1, "from": "Fraunhofer IMW", "to": "\u00a0 Henrik Beermann", "width": 1}, {"Weight": 1, "from": "Fraunhofer IMW", "to": "Dr. Christine Richter", "width": 1}, {"from": "Fraunhofer IMW", "to": "CHARMS", "width": 1}, {"Weight": 1, "from": "Fraunhofer IMW ", "to": " Manuel Molina Vogelsang", "width": 1}, {"Weight": 1, "from": "Fraunhofer IMW ", "to": " Urban Kaiser", "width": 1}, {"from": "Fraunhofer IMW ", "to": "CHARMS", "width": 1}, {"Weight": 1, "from": "Uni Chiang Mai, School of Public Policy", "to": "Dr. Warathida Chaiyapha", "width": 1}, {"from": "Uni Chiang Mai, School of Public Policy", "to": "CHARMS", "width": 1}, {"Weight": 1, "from": "Fraunhofer IBP", "to": "Prof. Ralf\u00a0 Kilian", "width": 1}, {"Weight": 1, "from": "Fraunhofer IBP", "to": "Prof. Martin\u00a0 Krus", "width": 1}, {"from": "Fraunhofer IBP", "to": "CHARMS", "width": 1}, {"Weight": 1, "from": "Fraunhofer IEE", "to": "Dr. Maike\u00a0 Buddensiek\u00a0", "width": 1}, {"Weight": 1, "from": "Fraunhofer IEE", "to": " Michael\u00a0 Krause", "width": 1}, {"from": "Fraunhofer IEE", "to": "CHARMS", "width": 1}, {"Weight": 1, "from": "Fraunhofer FOKUS", "to": " Philipp\u00a0 L\u00e4mmel", "width": 1}, {"Weight": 1, "from": "Fraunhofer FOKUS", "to": "\u00a0 Nikolay Tcholtchev", "width": 1}, {"from": "Fraunhofer FOKUS", "to": "CHARMS", "width": 1}, {"Weight": 1, "from": "AT-Verband Stuttgart", "to": "Dr. Oliver Assmann", "width": 1}, {"Weight": 1, "from": "AT-Verband Stuttgart", "to": "Dipl.-Geogr. Dieter Steinbach", "width": 1}, {"Weight": 1, "from": "AT-Verband Stuttgart", "to": "Dipl.-Geogr. Andrea Schultheis", "width": 1}, {"from": "AT-Verband Stuttgart", "to": "emplement!", "width": 1}, {"Weight": 1, "from": "Frankfurt University of Applied Sciences", "to": "Dr. Susana Restrepo Rico", "width": 1}, {"Weight": 1, "from": "Frankfurt University of Applied Sciences", "to": "Prof. Dr.-Ing. Michael Peterek", "width": 1}, {"from": "Frankfurt University of Applied Sciences", "to": "emplement!", "width": 1}, {"Weight": 1, "from": "Ostfalia University of Applied Sciences", "to": "Prof. Dr.-Ing. Artur Mennerich", "width": 1}, {"Weight": 1, "from": "Ostfalia University of Applied Sciences", "to": "M.Sc. Mona M\u00f6ller", "width": 1}, {"from": "Ostfalia University of Applied Sciences", "to": "emplement!", "width": 1}, {"Weight": 1, "from": "University of Hohenheim", "to": "Dipl. Andreas Aron-Winkler", "width": 1}, {"Weight": 1, "from": "University of Hohenheim", "to": "Dr. Romuli Sebastian", "width": 1}, {"from": "University of Hohenheim", "to": "emplement!", "width": 1}, {"Weight": 1, "from": "University T\u00fcbingen", "to": "Prof. Dr. Volker Hochschild", "width": 1}, {"Weight": 1, "from": "University T\u00fcbingen", "to": "Dr. Gebhard Warth", "width": 1}, {"Weight": 1, "from": "University T\u00fcbingen", "to": "Dr. Michael Schultze", "width": 1}, {"from": "University T\u00fcbingen", "to": "emplement!", "width": 1}, {"from": "University T\u00fcbingen", "to": "FloodAdaptVN", "width": 1}, {"Weight": 1, "from": "IZES", "to": "Dr. Ulrike Schinkel", "width": 1}, {"Weight": 1, "from": "IZES", "to": "M.Sc., Dipl.-Ing. Mike Speck", "width": 1}, {"Weight": 1, "from": "IZES", "to": " Mike Speck", "width": 1}, {"from": "IZES", "to": "emplement!", "width": 1}, {"from": "IZES", "to": "FloodAdaptVN", "width": 1}, {"Weight": 1, "from": "DLR", "to": "Dr. Felix Bachofer", "width": 1}, {"Weight": 1, "from": "DLR", "to": " Juliane Huth", "width": 1}, {"from": "DLR", "to": "FloodAdaptVN", "width": 1}, {"Weight": 1, "from": "HUSC", "to": "Dr. Ch\u00e2u Dang Gi\u00e1ng Nguyen", "width": 1}, {"from": "HUSC", "to": "FloodAdaptVN", "width": 1}, {"Weight": 1, "from": "HUIS", "to": "Assoc. Prof. Linh Ho\u00e0ng Kh\u00e1nh Nguyen", "width": 1}, {"from": "HUIS", "to": "FloodAdaptVN", "width": 1}, {"Weight": 1, "from": "Moved to Uni Hamburg", "to": "Dr. Antje Katzschner", "width": 1}, {"from": "Moved to Uni Hamburg", "to": "FloodAdaptVN", "width": 1}, {"Weight": 1, "from": "LMU", "to": "Prof. Dr. Mathias Garschagen", "width": 1}, {"Weight": 1, "from": "LMU", "to": "Dr. Andrea Reimuth", "width": 1}, {"Weight": 1, "from": "LMU", "to": "Dr. Emlyn Yang", "width": 1}, {"Weight": 1, "from": "LMU", "to": "Prof. Matthias Garschagen", "width": 1}, {"from": "LMU", "to": "FloodAdaptVN", "width": 1}, {"from": "LMU", "to": "LIRLAP", "width": 1}, {"Weight": 1, "from": "UNU-EHS", "to": "Dr. Zita Sebesvari", "width": 1}, {"Weight": 1, "from": "UNU-EHS", "to": "Dr. Souvignet Maxime", "width": 1}, {"Weight": 1, "from": "UNU-EHS", "to": "Dr. Michael Hagenlocher", "width": 1}, {"Weight": 1, "from": "UNU-EHS", "to": " Irfan Ullah", "width": 1}, {"Weight": 1, "from": "UNU-EHS", "to": " Andrea Ortiz-Vargas", "width": 1}, {"Weight": 1, "from": "UNU-EHS", "to": " Dominic Sett", "width": 1}, {"Weight": 1, "from": "UNU-EHS", "to": " Eike Behre", "width": 1}, {"Weight": 1, "from": "UNU-EHS", "to": " Florian Waldschmidt", "width": 1}, {"from": "UNU-EHS", "to": "FloodAdaptVN", "width": 1}, {"Weight": 1, "from": "Geomer GmbH", "to": " Kerstin B\u00fcche", "width": 1}, {"Weight": 1, "from": "Geomer GmbH", "to": "Dr. Andre Assmann", "width": 1}, {"from": "Geomer GmbH", "to": "FloodAdaptVN", "width": 1}, {"Weight": 1, "from": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "to": "Dr. Michael Zschiesche", "width": 1}, {"Weight": 1, "from": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "to": " Fabian Stolpe", "width": 1}, {"Weight": 1, "from": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "to": " Sarah Kovac", "width": 1}, {"Weight": 1, "from": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "to": " Nicole Wozny", "width": 1}, {"Weight": 1, "from": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "to": " Niklas M\u00fcller", "width": 1}, {"Weight": 1, "from": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "to": "Dr. Trang Dao", "width": 1}, {"from": "Unabh\u00e4ngiges Institut f\u00fcr Umweltfragen (UfU) e.V.", "to": "GreenCityLabHu?", "width": 1}, {"Weight": 1, "from": "HU Berlin", "to": "Prof. Dr. Dagmar Haase", "width": 1}, {"Weight": 1, "from": "HU Berlin", "to": "Dr. Sebastian Scheuer", "width": 1}, {"Weight": 1, "from": "HU Berlin", "to": " Jessica Jache", "width": 1}, {"from": "HU Berlin", "to": "GreenCityLabHu?", "width": 1}, {"Weight": 1, "from": "Thua Thien Hue Institute for Development Studies (HueIDS)", "to": " Cuong Cung", "width": 1}, {"Weight": 1, "from": "Thua Thien Hue Institute for Development Studies (HueIDS)", "to": " Nhi Nguyen", "width": 1}, {"from": "Thua Thien Hue Institute for Development Studies (HueIDS)", "to": "GreenCityLabHu?", "width": 1}, {"Weight": 1, "from": "Mientrung Institute for Scientific Research (MISR)", "to": " Thi\u00a0Binh Minh\u00a0 Hoang", "width": 1}, {"Weight": 1, "from": "Mientrung Institute for Scientific Research (MISR)", "to": " Dac Hoang Long Nguyen", "width": 1}, {"from": "Mientrung Institute for Scientific Research (MISR)", "to": "GreenCityLabHu?", "width": 1}, {"Weight": 1, "from": "Hue University of Sciences (HUSC)", "to": "Dr. Tung Nguyen Ngoc", "width": 1}, {"from": "Hue University of Sciences (HUSC)", "to": "GreenCityLabHu?", "width": 1}, {"Weight": 1, "from": "Did not find anything", "to": " Ylan Kim Vo", "width": 1}, {"Weight": 1, "from": "Did not find anything", "to": " Anh Thu Pham Thi", "width": 1}, {"Weight": 1, "from": "Did not find anything", "to": " Juan Mercado", "width": 1}, {"Weight": 1, "from": "Did not find anything", "to": " Utia Suarma", "width": 1}, {"Weight": 1, "from": "Did not find anything", "to": "Dr. (Emma) Dyah Rahmawati\u00a0 Hizbaron", "width": 1}, {"Weight": 1, "from": "Did not find anything", "to": " Xu JI", "width": 1}, {"Weight": 1, "from": "Did not find anything", "to": "Prof. Dr. Jian LIU", "width": 1}, {"Weight": 1, "from": "Did not find anything", "to": "Prof. Dr. Gangyi TAN", "width": 1}, {"from": "Did not find anything", "to": "GreenCityLabHu?", "width": 1}, {"from": "Did not find anything", "to": "PolyUrbanWaters", "width": 1}, {"from": "Did not find anything", "to": "URA", "width": 1}, {"Weight": 1, "from": "TU Dortmund, Faculty of Spatial Planning, IRPUD", "to": "Prof. Dr. Stefan Greiving", "width": 1}, {"Weight": 1, "from": "TU Dortmund, Faculty of Spatial Planning, IRPUD", "to": "Dr.-Ing. Wolfgang Scholz", "width": 1}, {"Weight": 1, "from": "TU Dortmund, Faculty of Spatial Planning, IRPUD", "to": "Dr. Du Juan", "width": 1}, {"Weight": 1, "from": "TU Dortmund, Faculty of Spatial Planning, IRPUD", "to": "Dr. Mathias Kaiser", "width": 1}, {"from": "TU Dortmund, Faculty of Spatial Planning, IRPUD", "to": "LIRLAP", "width": 1}, {"Weight": 1, "from": "University Stuttgart", "to": " Hannes Lauer", "width": 1}, {"Weight": 1, "from": "University Stuttgart", "to": "Prof. J\u00f6rn Birkmann", "width": 1}, {"Weight": 1, "from": "University Stuttgart", "to": " Pimnara Rodkul", "width": 1}, {"from": "University Stuttgart", "to": "LIRLAP", "width": 1}, {"Weight": 1, "from": "Faculty of Natural Re\u00adsour\u00adces and Environment at the Vietnam National Uni\u00adver\u00adsity of Agriculture ", "to": "Prof. Tran Trong Phuong", "width": 1}, {"Weight": 1, "from": "Faculty of Natural Re\u00adsour\u00adces and Environment at the Vietnam National Uni\u00adver\u00adsity of Agriculture ", "to": " Hoang Le Huong", "width": 1}, {"Weight": 1, "from": "Faculty of Natural Re\u00adsour\u00adces and Environment at the Vietnam National Uni\u00adver\u00adsity of Agriculture ", "to": " Vu Thanh Bien", "width": 1}, {"Weight": 1, "from": "Faculty of Natural Re\u00adsour\u00adces and Environment at the Vietnam National Uni\u00adver\u00adsity of Agriculture ", "to": "Dr. Ngo Thanh Son", "width": 1}, {"Weight": 1, "from": "Faculty of Natural Re\u00adsour\u00adces and Environment at the Vietnam National Uni\u00adver\u00adsity of Agriculture ", "to": "Prof. Thanh Mai Nguyen Thi", "width": 1}, {"from": "Faculty of Natural Re\u00adsour\u00adces and Environment at the Vietnam National Uni\u00adver\u00adsity of Agriculture ", "to": "LIRLAP", "width": 1}, {"Weight": 1, "from": "The Urban Futures \u0026 Policy Research Unit (UFP) of Thammasat Uni\u00adver\u00adsity", "to": " Nontarit Bejrananda", "width": 1}, {"Weight": 1, "from": "The Urban Futures \u0026 Policy Research Unit (UFP) of Thammasat Uni\u00adver\u00adsity", "to": "Prof. Wijitbusaba Ann Marome", "width": 1}, {"from": "The Urban Futures \u0026 Policy Research Unit (UFP) of Thammasat Uni\u00adver\u00adsity", "to": "LIRLAP", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": "Prof. David Yap", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": "Prof. Carmeli Marie Chaves", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": "Prof. Ma Sheilah Napalang", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": " Evelyn Lorenzo", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": " Vince Francisco Eugenio", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": " Annlouise Genevieve Castro", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": "Prof. Dina Cartagena Magnaye", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": " Sonia Islam", "width": 1}, {"Weight": 1, "from": "SURP Philippines", "to": " Beverly\u00a0 Abad", "width": 1}, {"from": "SURP Philippines", "to": "LIRLAP", "width": 1}, {"Weight": 1, "from": "LMU / Moved to Uni Hamburg", "to": " Antje\u00a0 Katzschner", "width": 1}, {"from": "LMU / Moved to Uni Hamburg", "to": "LIRLAP", "width": 1}, {"Weight": 1, "from": "BORDA e.V.", "to": "Dr. Bernd Gutterer", "width": 1}, {"Weight": 1, "from": "BORDA e.V.", "to": " Jati Kusumowati", "width": 1}, {"Weight": 1, "from": "BORDA e.V.", "to": " Fabio Nicoletti", "width": 1}, {"Weight": 1, "from": "BORDA e.V.", "to": " Richard Hocking", "width": 1}, {"Weight": 1, "from": "BORDA e.V.", "to": " Bounchan\u00a0 Khamphilayvong", "width": 1}, {"Weight": 1, "from": "BORDA e.V.", "to": " Mang Opasith", "width": 1}, {"Weight": 1, "from": "BORDA e.V.", "to": " Hendra Gupta", "width": 1}, {"from": "BORDA e.V.", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "TH K\u00f6ln", "to": " Xhesika\u00a0 Hoxha", "width": 1}, {"Weight": 1, "from": "TH K\u00f6ln", "to": " Frederic\u00a0 Hebbeker", "width": 1}, {"Weight": 1, "from": "TH K\u00f6ln", "to": " Hassan Abolenga", "width": 1}, {"Weight": 1, "from": "TH K\u00f6ln", "to": "Prof. Dr. Lars Ribbe", "width": 1}, {"from": "TH K\u00f6ln", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "TU Berlin", "to": " Ania Wilk-Pham", "width": 1}, {"Weight": 1, "from": "TU Berlin", "to": " Elise\u00a0 Nguyen", "width": 1}, {"Weight": 1, "from": "TU Berlin", "to": " Adrian Hodgson", "width": 1}, {"Weight": 1, "from": "TU Berlin", "to": "Prof. Anke  Hagemann", "width": 1}, {"Weight": 1, "from": "TU Berlin", "to": " Arina  Rahma", "width": 1}, {"Weight": 1, "from": "TU Berlin", "to": "Prof. Anke Hagemann", "width": 1}, {"Weight": 1, "from": "TU Berlin", "to": " Lukas Pappert", "width": 1}, {"from": "TU Berlin", "to": "PolyUrbanWaters", "width": 1}, {"from": "TU Berlin", "to": "URA", "width": 1}, {"Weight": 1, "from": "Kota Kita", "to": " Ahmed\u00a0 Rifai\u00a0", "width": 1}, {"Weight": 1, "from": "Kota Kita", "to": " Icha\u00a0 Hasanatun Nisa Thamarin\u00a0", "width": 1}, {"Weight": 1, "from": "Kota Kita", "to": " Bisma Setiyadi", "width": 1}, {"Weight": 1, "from": "Kota Kita", "to": " Asri  Septarizky", "width": 1}, {"Weight": 1, "from": "Kota Kita", "to": " Nisita Pradipta", "width": 1}, {"from": "Kota Kita", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "AKSANSI", "to": " Prasetyastuti Puspowardoyo", "width": 1}, {"from": "AKSANSI", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "Vietnam Academy of Water Resources", "to": "Dr. Tran Duc Trinh", "width": 1}, {"from": "Vietnam Academy of Water Resources", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "Technische Hochschule K\u00f6ln", "to": " Chahinaz Ziani", "width": 1}, {"from": "Technische Hochschule K\u00f6ln", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "University of Gadjah Mada", "to": "Prof.\u00a0\u00a0 Bakti\u00a0 Setiawan", "width": 1}, {"Weight": 1, "from": "University of Gadjah Mada", "to": " Lintang Nur Fadlillah", "width": 1}, {"from": "University of Gadjah Mada", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "Asian Institute of Technology", "to": "Prof.\u00a0\u00a0 Thammarat\u00a0 Koottatep", "width": 1}, {"from": "Asian Institute of Technology", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "Free Hanseatic City of Bremen, Ministry for Climate, Environment, Mobility, Housing and Urban Development", "to": "Dr. Christof Vo\u00dfeler", "width": 1}, {"from": "Free Hanseatic City of Bremen, Ministry for Climate, Environment, Mobility, Housing and Urban Development", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "HAMBURG WASSER", "to": " Claudia\u00a0 Wendland", "width": 1}, {"Weight": 1, "from": "HAMBURG WASSER", "to": " Sonja Schlipf", "width": 1}, {"from": "HAMBURG WASSER", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "CIUS", "to": "Dr. Tep\u00a0 Makathy", "width": 1}, {"from": "CIUS", "to": "PolyUrbanWaters", "width": 1}, {"Weight": 1, "from": "TU Berlin, Habitat Unit", "to": "Dr. Kit Braybrooke", "width": 1}, {"Weight": 1, "from": "TU Berlin, Habitat Unit", "to": "Dr. Li FAN", "width": 1}, {"Weight": 1, "from": "TU Berlin, Habitat Unit", "to": " Tino Imsirovic", "width": 1}, {"from": "TU Berlin, Habitat Unit", "to": "URA", "width": 1}, {"Weight": 1, "from": "TU Berlin, CCST", "to": " Ava Lynam", "width": 1}, {"Weight": 1, "from": "TU Berlin, CCST", "to": "Dr. Sigrun Abels", "width": 1}, {"Weight": 1, "from": "TU Berlin, CCST", "to": " Yiqi Zhang", "width": 1}, {"from": "TU Berlin, CCST", "to": "URA", "width": 1}, {"Weight": 1, "from": "TU Berlin, CERT", "to": "Prof. Dr. Vera Susanne Rotter", "width": 1}, {"Weight": 1, "from": "TU Berlin, CERT", "to": "Dr.\u00a0 Bing XUE", "width": 1}, {"Weight": 1, "from": "TU Berlin, CERT", "to": " Sijia TANG", "width": 1}, {"Weight": 1, "from": "TU Berlin, CERT", "to": " Yanzi Zhou", "width": 1}, {"from": "TU Berlin, CERT", "to": "URA", "width": 1}, {"Weight": 1, "from": "Bauhaus Uni Weimar", "to": "Prof. Dr. Sigrun Langner", "width": 1}, {"Weight": 1, "from": "Bauhaus Uni Weimar", "to": "Dr. des Maria Fr\u00f6lich-Kulik", "width": 1}, {"Weight": 1, "from": "Bauhaus Uni Weimar", "to": " Yulin Zhang", "width": 1}, {"Weight": 1, "from": "Bauhaus Uni Weimar", "to": " Karl Beelen", "width": 1}, {"Weight": 1, "from": "Bauhaus Uni Weimar", "to": " Jonas Langbein", "width": 1}, {"from": "Bauhaus Uni Weimar", "to": "URA", "width": 1}, {"Weight": 1, "from": "Leibniz Institute of Ecological Urban and Regional Development (IOER)", "to": "Dr. Suili XIAO", "width": 1}, {"Weight": 1, "from": "Leibniz Institute of Ecological Urban and Regional Development (IOER)", "to": "Prof. Dr. Wolfgang Wende", "width": 1}, {"Weight": 1, "from": "Leibniz Institute of Ecological Urban and Regional Development (IOER)", "to": " Maximilian Haase", "width": 1}, {"from": "Leibniz Institute of Ecological Urban and Regional Development (IOER)", "to": "URA", "width": 1}, {"Weight": 1, "from": "UN HABITAT, Nairobi", "to": "Dr. Remy Sietchiping", "width": 1}, {"Weight": 1, "from": "UN HABITAT, Nairobi", "to": " Grace Githiri", "width": 1}, {"from": "UN HABITAT, Nairobi", "to": "URA", "width": 1}, {"Weight": 1, "from": "Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning", "to": "Prof. Dr. Guiqing Yang", "width": 1}, {"Weight": 1, "from": "Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning", "to": "Dr. Huang Huang", "width": 1}, {"Weight": 1, "from": "Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning", "to": "Dr. Daijun SONG", "width": 1}, {"Weight": 1, "from": "Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning", "to": " Yizheng WANG", "width": 1}, {"Weight": 1, "from": "Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning", "to": " Liyao WANG", "width": 1}, {"from": "Tongji University Shanghai, CAUP College of Architecture and Urban Planning, Department of Urban Planning", "to": "URA", "width": 1}, {"Weight": 1, "from": "Zhejiang University, Institute of Landscape Architecture", "to": "Dr.-Ing. Yuting Xie", "width": 1}, {"Weight": 1, "from": "Zhejiang University, Institute of Landscape Architecture", "to": " Jiaxin YING", "width": 1}, {"from": "Zhejiang University, Institute of Landscape Architecture", "to": "URA", "width": 1}, {"Weight": 1, "from": "ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES", "to": "Prof. Dr. Weixiang WU", "width": 1}, {"Weight": 1, "from": "ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES", "to": "Dr. Yong QIN", "width": 1}, {"Weight": 1, "from": "ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES", "to": "Prof. Dr. Lingli LU", "width": 1}, {"Weight": 1, "from": "ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES", "to": "Prof. Dr. Shengke TIAN", "width": 1}, {"from": "ZHEJIANG UNIVERSITY, COLLEGE OF ENVIRONMENTAL AND RESOURCE SCIENCES", "to": "URA", "width": 1}, {"Weight": 1, "from": "TONGJI UNIVERSITY SHANGHAI, ?CENTER FOR ECOLOGICAL WISDOM AND PRACTICE RESEARCH", "to": "Prof. Dr. Wentao\u00a0 YAN", "width": 1}, {"Weight": 1, "from": "TONGJI UNIVERSITY SHANGHAI, ?CENTER FOR ECOLOGICAL WISDOM AND PRACTICE RESEARCH", "to": " Hui CHEN", "width": 1}, {"from": "TONGJI UNIVERSITY SHANGHAI, ?CENTER FOR ECOLOGICAL WISDOM AND PRACTICE RESEARCH", "to": "URA", "width": 1}, {"Weight": 1, "from": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "to": "Prof. Dr. Yong LIU", "width": 1}, {"Weight": 1, "from": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "to": "Dr. Jinwei\u00a0 HAO", "width": 1}, {"Weight": 1, "from": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "to": "Dr. Jun JIANG", "width": 1}, {"Weight": 1, "from": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "to": "Prof. Dr. Yongfu LI", "width": 1}, {"Weight": 1, "from": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "to": "Dr. Fengqing LI", "width": 1}, {"Weight": 1, "from": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "to": "Prof. Dr. Xiulin SUN", "width": 1}, {"from": "SHANGHAI UNIVERSITY, SAFA, DEPARTMENT OF ARCHITECTURE", "to": "URA", "width": 1}, {"Weight": 1, "from": "Technische Universit\u00e4t Berlin", "to": "Prof. Dr. em. Johannes K\u00fcchler", "width": 1}, {"from": "Technische Universit\u00e4t Berlin", "to": "URA", "width": 1}, {"Weight": 1, "from": "Freie Universit\u00e4t Berlin", "to": "Prof. Dr. Elena\u00a0 Meyer- Clement\u00a0", "width": 1}, {"from": "Freie Universit\u00e4t Berlin", "to": "URA", "width": 1}, {"Weight": 1, "from": "Hafen City Universit\u00e4t Hamburg", "to": "Prof. Antje\u00a0 Stokmann", "width": 1}, {"from": "Hafen City Universit\u00e4t Hamburg", "to": "URA", "width": 1}, {"Weight": 1, "from": "Curator and Author", "to": "Dr. Eduard K\u00f6gel", "width": 1}, {"from": "Curator and Author", "to": "URA", "width": 1}, {"Weight": 1, "from": "Federal Agency for Nature Conservation\n (Bnf) Division of International Nature Conservation (Bonn)", "to": "Prof. Dr. Beate Jessel", "width": 1}, {"from": "Federal Agency for Nature Conservation\n (Bnf) Division of International Nature Conservation (Bonn)", "to": "URA", "width": 1}, {"Weight": 1, "from": "Tongji University, CAUP", "to": "Prof. Dr. em. Min ZHAO", "width": 1}, {"from": "Tongji University, CAUP", "to": "URA", "width": 1}, {"Weight": 1, "from": "Chinese Academy of Surveying and Mapping", "to": "Dr. Wei HOU", "width": 1}, {"from": "Chinese Academy of Surveying and Mapping", "to": "URA", "width": 1}, {"Weight": 1, "from": "THE UNIVERSITY OF NORTH CAROLINA AT CHARLOTTE, DEPARTMENT OF GEOGRAPHY AND EARTH SCIENCES", "to": "Dr. Wie-Ning XIANG", "width": 1}, {"from": "THE UNIVERSITY OF NORTH CAROLINA AT CHARLOTTE, DEPARTMENT OF GEOGRAPHY AND EARTH SCIENCES", "to": "URA", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
